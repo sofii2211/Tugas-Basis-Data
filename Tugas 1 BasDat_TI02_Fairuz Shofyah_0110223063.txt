@@ -1,0 +1,689 @@
+TUGAS 1 BasDat
+
+Setting environment for using XAMPP for Windows.
+HP@SOFII c:\xampp
+# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 10
+Server version: 10.4.28-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> CREATE DATABASE dbpegawai;
+Query OK, 1 row affected (0.002 sec)
+
+MariaDB [(none)]> USE dbpegawai;
+Database changed
+
+MariaDB [dbpegawai]> CREATE TABLE divisi (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> nama VARCHAR(30) NOT NULL UNIQUE);
+Query OK, 0 rows affected (0.050 sec)
+
+MariaDB [dbpegawai]> DESCRIBE divisi;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| nama  | varchar(30) | NO   | UNI | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (0.037 sec)
+
+MariaDB [dbpegawai]> CREATE TABLE jabatan (
+    -> id INT PRIMARY KEY AUTO_INCREMENT,
+    -> nama VARCHAR(30) NOT NULL UNIQUE);
+Query OK, 0 rows affected (0.052 sec)
+
+MariaDB [dbpegawai]> DESCRIBE jabatan;
++-------+-------------+------+-----+---------+----------------+
+| Field | Type        | Null | Key | Default | Extra          |
++-------+-------------+------+-----+---------+----------------+
+| id    | int(11)     | NO   | PRI | NULL    | auto_increment |
+| nama  | varchar(30) | NO   | UNI | NULL    |                |
++-------+-------------+------+-----+---------+----------------+
+2 rows in set (0.029 sec)
+
+MariaDB [dbpegawai]> CREATE TABLE pegawai (
+    ->     id INT PRIMARY KEY AUTO_INCREMENT,
+    ->     nip CHAR(5) NOT NULL UNIQUE,
+    ->     nama VARCHAR(30) NOT NULL,
+    ->     gender ENUM('Laki-Laki','Perempuan') NOT NULL,
+    ->     tmp_lahir VARCHAR(30) NOT NULL,
+    ->     tgl_lahir DATE NOT NULL,
+    ->     iddivisi INT NOT NULL,
+    ->     idjabatan INT NOT NULL,
+    ->     alamat TEXT,
+    ->     FOREIGN KEY (iddivisi) REFERENCES divisi(id),
+    ->     FOREIGN KEY (idjabatan) REFERENCES jabatan(id)
+    -> );
+Query OK, 0 rows affected (0.031 sec)
+
+MariaDB [dbpegawai]> DESCRIBE pegawai;
++-----------+-------------------------------+------+-----+---------+----------------+
+| Field     | Type                          | Null | Key | Default | Extra          |
++-----------+-------------------------------+------+-----+---------+----------------+
+| id        | int(11)                       | NO   | PRI | NULL    | auto_increment |
+| nip       | char(5)                       | NO   | UNI | NULL    |                |
+| nama      | varchar(30)                   | NO   |     | NULL    |                |
+| gender    | enum('Laki-Laki','Perempuan') | NO   |     | NULL    |                |
+| tmp_lahir | varchar(30)                   | NO   |     | NULL    |                |
+| tgl_lahir | date                          | NO   |     | NULL    |                |
+| iddivisi  | int(11)                       | NO   | MUL | NULL    |                |
+| idjabatan | int(11)                       | NO   | MUL | NULL    |                |
+| alamat    | text                          | YES  |     | NULL    |                |
++-----------+-------------------------------+------+-----+---------+----------------+
+9 rows in set (0.030 sec)
+
+MariaDB [dbpegawai]> SHOW TABLES;
++---------------------+
+| Tables_in_dbpegawai |
++---------------------+
+| divisi              |
+| jabatan             |
+| pegawai             |
++---------------------+
+3 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> INSERT INTO divisi (nama) VALUES
+    -> ('SDM'),
+    -> ('Keuangan'),
+    -> ('Marketing'),
+    -> ('IT');
+Query OK, 4 rows affected (0.009 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM divisi;
++----+-----------+
+| id | nama      |
++----+-----------+
+|  4 | IT        |
+|  2 | Keuangan  |
+|  3 | Marketing |
+|  1 | SDM       |
++----+-----------+
+4 rows in set (0.001 sec)
+
+
+MariaDB [dbpegawai]> INSERT INTO jabatan (nama) VALUES
+    -> ('Direktur'),
+    -> ('Manajer'),
+    -> ('Asisten Manajer'),
+    -> ('Staff');
+Query OK, 4 rows affected (0.010 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM jabatan;
++----+-----------------+
+| id | nama            |
++----+-----------------+
+|  3 | Asisten Manajer |
+|  1 | Direktur        |
+|  2 | Manajer         |
+|  4 | Staff           |
++----+-----------------+
+4 rows in set (0.001 sec)
+
+
+MariaDB [dbpegawai]> INSERT INTO pegawai (nip, nama, gender, tmp_lahir, tgl_lahir, iddivisi, idjabatan, alamat) VALUES
+    -> (67890, 'Bambang Kusuma', 'Laki-laki', 'Medan', '1983-08-21', 1, 1, 'Jl. Melati No. 8, Jakarta'),
+    -> (78901, 'Dewi Citra', 'Perempuan', 'Palembang', '1990-05-17', 1, 4, 'Jl. Anggrek No. 15, Tangerang'),
+    -> (89012, 'Cindy Rahayu', 'Perempuan', 'Pontianak', '1988-12-30', 1, 3, 'Jl. Mangga Dua No. 10, Jakarta'),
+    -> (90123, 'Muhammad Adi', 'Laki-laki', 'Makassar', '1985-03-08', 1, 2, 'Jl. Sawangan Indah No. 5, Depok'),
+    -> (12340, 'Eka Wijaya', 'Perempuan', 'Solo', '1993-09-05', 1, 4, 'Jl. Diponegoro No. 20, Jakarta');
+Query OK, 5 rows affected (0.004 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> INSERT INTO Pegawai (nip, nama, gender, tmp_lahir, tgl_lahir, iddivisi, idjabatan, alamat) VALUES
+    -> (87654, 'Sari Indah', 'Perempuan', 'Palembang', '1983-06-08', 2, 1, 'Jl. Tomang Raya No. 12, Jakarta'),
+    -> (98765, 'Budi Santoso', 'Laki-laki', 'Medan', '1985-01-10', 2, 2, 'Jl. Kelapa Gading No. 5, Jakarta'),
+    -> (65432, 'Ani Susanti', 'Perempuan', 'Pontianak', '1991-04-25', 2, 3, 'Jl. Mangga Besar No. 20, Jakarta'),
+    -> (76543, 'Rudi Wijaya', 'Laki-laki', 'Bandar Lampung', '1998-12-17', 2, 4, 'Jl. Puri Indah No. 18, Tangerang'),
+    -> (54321, 'Hendra Pratama', 'Laki-laki', 'Makassar', '1993-08-19', 2, 4, 'Jl. Kuningan Barat No. 3, Jakarta');
+Query OK, 5 rows affected (0.010 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> INSERT INTO pegawai (nip, nama, gender, tmp_lahir, tgl_lahir, iddivisi, idjabatan, alamat) VALUES
+    -> (10579, 'Diara Putri', 'Perempuan', 'Bandung', '1980-07-05', 3, 1, 'Jl. Cipinang Muara No. 2, Jakarta'),
+    -> (27680, 'Rahmat Nugroho', 'Laki-laki', 'Semarang', '1980-12-20', 3, 2, 'Jl. Tebet Timur No. 14, Jakarta'),
+    -> (35741, 'Sulis Setiadi', 'Laki-laki', 'Balikpapan', '1989-10-30', 3, 3, 'Jl. Duri Kepa No. 9, Jakarta'),
+    -> (43802, 'Sinta Wulandari', 'Perempuan', 'Malang', '1996-02-14', 3, 4, 'Jl. Meruya Selatan No. 7, Tangerang'),
+    -> (57953, 'Lia Puspita', 'Perempuan', 'Surabaya', '1994-09-11', 3, 4, 'Jl. Bintaro Utama No. 6, Tangerang');
+Query OK, 5 rows affected (0.011 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> INSERT INTO Pegawai (nip, nama, gender, tmp_lahir, tgl_lahir, iddivisi, idjabatan, alamat) VALUES
+    -> (56799, 'Fajar Setiawan', 'Laki-laki', 'Bogor', '1981-08-28', 4, 1, 'Jl. Slipi Jaya No. 3, Jakarta'),
+    -> (15678, 'Maya Sari', 'Perempuan', 'Denpasar', '1984-03-17', 4, 2, 'Jl. Kramat Sentiong No. 16, Jakarta'),
+    -> (34067, 'Dewa Nugraha', 'Laki-laki', 'Manado', '1987-04-08', 4, 3, 'Jl. Cilandak Barat No. 4, Tangerang'),
+    -> (93456, 'Asep Wibowo', 'Laki-laki', 'Pekanbaru', '1997-11-23', 4, 4, 'Jl. Kebon Jeruk Barat No. 11, Jakarta'),
+    -> (67390, 'Sari Rahayu', 'Perempuan', 'Makassar', '1990-06-10', 4, 4, 'Jl. Serpong Jaya No. 8, Tangerang');
+Query OK, 5 rows affected (0.010 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+---------------------------------------+
+| id | nip   | nama            | gender    | tmp_lahir      | tgl_lahir  | iddivisi | idjabatan | alamat                                |
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+---------------------------------------+
+|  1 | 67890 | Bambang Kusuma  | Laki-Laki | Medan          | 1983-08-21 |        1 |         1 | Jl. Melati No. 8, Jakarta             |
+|  2 | 78901 | Dewi Citra      | Perempuan | Palembang      | 1990-05-17 |        1 |         4 | Jl. Anggrek No. 15, Tangerang         |
+|  3 | 89012 | Cindy Rahayu    | Perempuan | Pontianak      | 1988-12-30 |        1 |         3 | Jl. Mangga Dua No. 10, Jakarta        |
+|  4 | 90123 | Muhammad Adi    | Laki-Laki | Makassar       | 1985-03-08 |        1 |         2 | Jl. Sawangan Indah No. 5, Depok       |
+|  5 | 12340 | Eka Wijaya      | Perempuan | Solo           | 1993-09-05 |        1 |         4 | Jl. Diponegoro No. 20, Jakarta        |
+|  6 | 87654 | Sari Indah      | Perempuan | Palembang      | 1983-06-08 |        2 |         1 | Jl. Tomang Raya No. 12, Jakarta       |
+|  7 | 98765 | Budi Santoso    | Laki-Laki | Medan          | 1985-01-10 |        2 |         2 | Jl. Kelapa Gading No. 5, Jakarta      |
+|  8 | 65432 | Ani Susanti     | Perempuan | Pontianak      | 1991-04-25 |        2 |         3 | Jl. Mangga Besar No. 20, Jakarta      |
+|  9 | 76543 | Rudi Wijaya     | Laki-Laki | Bandar Lampung | 1998-12-17 |        2 |         4 | Jl. Puri Indah No. 18, Tangerang      |
+| 10 | 54321 | Hendra Pratama  | Laki-Laki | Makassar       | 1993-08-19 |        2 |         4 | Jl. Kuningan Barat No. 3, Jakarta     |
+| 11 | 10579 | Diara Putri     | Perempuan | Bandung        | 1980-07-05 |        3 |         1 | Jl. Cipinang Muara No. 2, Jakarta     |
+| 12 | 27680 | Rahmat Nugroho  | Laki-Laki | Semarang       | 1980-12-20 |        3 |         2 | Jl. Tebet Timur No. 14, Jakarta       |
+| 13 | 35741 | Sulis Setiadi   | Laki-Laki | Balikpapan     | 1989-10-30 |        3 |         3 | Jl. Duri Kepa No. 9, Jakarta          |
+| 14 | 43802 | Sinta Wulandari | Perempuan | Malang         | 1996-02-14 |        3 |         4 | Jl. Meruya Selatan No. 7, Tangerang   |
+| 15 | 57953 | Lia Puspita     | Perempuan | Surabaya       | 1994-09-11 |        3 |         4 | Jl. Bintaro Utama No. 6, Tangerang    |
+| 16 | 56799 | Fajar Setiawan  | Laki-Laki | Bogor          | 1981-08-28 |        4 |         1 | Jl. Slipi Jaya No. 3, Jakarta         |
+| 17 | 15678 | Maya Sari       | Perempuan | Denpasar       | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta   |
+| 18 | 34067 | Dewa Nugraha    | Laki-Laki | Manado         | 1987-04-08 |        4 |         3 | Jl. Cilandak Barat No. 4, Tangerang   |
+| 19 | 93456 | Asep Wibowo     | Laki-Laki | Pekanbaru      | 1997-11-23 |        4 |         4 | Jl. Kebon Jeruk Barat No. 11, Jakarta |
+| 20 | 67390 | Sari Rahayu     | Perempuan | Makassar       | 1990-06-10 |        4 |         4 | Jl. Serpong Jaya No. 8, Tangerang     |
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+---------------------------------------+
+20 rows in set (0.001 sec)
+
+
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET nama = 'Muhammad Sadam', tmp_lahir = 'Gorontalo', tgl_lahir = '1981-08-03'
+    -> WHERE id = 4;
+Query OK, 1 row affected (0.011 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET tmp_lahir = 'Jakarta', tgl_lahir = '1978-11-22', alamat = 'Jl. Setia Warga No. 1, Bekasi'
+    -> WHERE id = 7;
+Query OK, 1 row affected (0.011 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET nama = 'Asep Darmanto', gender = 'Laki-Laki', alamat = 'Jl. Lenteng Agung Raya No. 20, Jakarta'
+    -> WHERE id = 5;
+Query OK, 1 row affected (0.010 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+----------------------------------------+
+| id | nip   | nama            | gender    | tmp_lahir      | tgl_lahir  | iddivisi | idjabatan | alamat				 |
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+----------------------------------------+
+|  1 | 67890 | Bambang Kusuma  | Laki-Laki | Medan          | 1983-08-21 |        1 |         1 | Jl. Melati No. 8, Jakarta              |
+|  2 | 78901 | Dewi Citra      | Perempuan | Palembang      | 1990-05-17 |        1 |         4 | Jl. Anggrek No. 15, Tangerang          |
+|  3 | 89012 | Cindy Rahayu    | Perempuan | Pontianak      | 1988-12-30 |        1 |         3 | Jl. Mangga Dua No. 10, Jakarta         |
+|  4 | 90123 | Muhammad Sadam  | Laki-Laki | Gorontalo      | 1981-08-03 |        1 |         2 | Jl. Sawangan Indah No. 5, Depok        |
+|  5 | 12340 | Asep Darmanto   | Laki-Laki | Solo           | 1993-09-05 |        1 |         4 | Jl. Lenteng Agung Raya No. 20, Jakarta |
+|  6 | 87654 | Sari Indah      | Perempuan | Palembang      | 1983-06-08 |        2 |         1 | Jl. Tomang Raya No. 12, Jakarta        |
+|  7 | 98765 | Budi Santoso    | Laki-Laki | Jakarta        | 1978-11-22 |        2 |         2 | Jl. Setia Warga No. 1, Bekasi          |
+|  8 | 65432 | Ani Susanti     | Perempuan | Pontianak      | 1991-04-25 |        2 |         3 | Jl. Mangga Besar No. 20, Jakarta       |
+|  9 | 76543 | Rudi Wijaya     | Laki-Laki | Bandar Lampung | 1998-12-17 |        2 |         4 | Jl. Puri Indah No. 18, Tangerang       |
+| 10 | 54321 | Hendra Pratama  | Laki-Laki | Makassar       | 1993-08-19 |        2 |         4 | Jl. Kuningan Barat No. 3, Jakarta      |
+| 11 | 10579 | Diara Putri     | Perempuan | Bandung        | 1980-07-05 |        3 |         1 | Jl. Cipinang Muara No. 2, Jakarta      |
+| 12 | 27680 | Rahmat Nugroho  | Laki-Laki | Semarang       | 1980-12-20 |        3 |         2 | Jl. Tebet Timur No. 14, Jakarta        |
+| 13 | 35741 | Sulis Setiadi   | Laki-Laki | Balikpapan     | 1989-10-30 |        3 |         3 | Jl. Duri Kepa No. 9, Jakarta           |
+| 14 | 43802 | Sinta Wulandari | Perempuan | Malang         | 1996-02-14 |        3 |         4 | Jl. Meruya Selatan No. 7, Tangerang    |
+| 15 | 57953 | Lia Puspita     | Perempuan | Surabaya       | 1994-09-11 |        3 |         4 | Jl. Bintaro Utama No. 6, Tangerang     |
+| 16 | 56799 | Fajar Setiawan  | Laki-Laki | Bogor          | 1981-08-28 |        4 |         1 | Jl. Slipi Jaya No. 3, Jakarta          |
+| 17 | 15678 | Maya Sari       | Perempuan | Denpasar       | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta    |
+| 18 | 34067 | Dewa Nugraha    | Laki-Laki | Manado         | 1987-04-08 |        4 |         3 | Jl. Cilandak Barat No. 4, Tangerang    |
+| 19 | 93456 | Asep Wibowo     | Laki-Laki | Pekanbaru      | 1997-11-23 |        4 |         4 | Jl. Kebon Jeruk Barat No. 11, Jakarta  |
+| 20 | 67390 | Sari Rahayu     | Perempuan | Makassar       | 1990-06-10 |        4 |         4 | Jl. Serpong Jaya No. 8, Tangerang      |
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+----------------------------------------+
+20 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> DELETE FROM pegawai ORDER BY id DESC LIMIT 2;
+Query OK, 2 rows affected (0.009 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+----------------------------------------+
+| id | nip   | nama            | gender    | tmp_lahir      | tgl_lahir  | iddivisi | idjabatan | alamat				 |
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+----------------------------------------+
+|  1 | 67890 | Bambang Kusuma  | Laki-Laki | Medan          | 1983-08-21 |        1 |         1 | Jl. Melati No. 8, Jakarta              |
+|  2 | 78901 | Dewi Citra      | Perempuan | Palembang      | 1990-05-17 |        1 |         4 | Jl. Anggrek No. 15, Tangerang          |
+|  3 | 89012 | Cindy Rahayu    | Perempuan | Pontianak      | 1988-12-30 |        1 |         3 | Jl. Mangga Dua No. 10, Jakarta         |
+|  4 | 90123 | Muhammad Sadam  | Laki-Laki | Gorontalo      | 1981-08-03 |        1 |         2 | Jl. Sawangan Indah No. 5, Depok        |
+|  5 | 12340 | Asep Darmanto   | Laki-Laki | Solo           | 1993-09-05 |        1 |         4 | Jl. Lenteng Agung Raya No. 20, Jakarta |
+|  6 | 87654 | Sari Indah      | Perempuan | Palembang      | 1983-06-08 |        2 |         1 | Jl. Tomang Raya No. 12, Jakarta        |
+|  7 | 98765 | Budi Santoso    | Laki-Laki | Jakarta        | 1978-11-22 |        2 |         2 | Jl. Setia Warga No. 1, Bekasi          |
+|  8 | 65432 | Ani Susanti     | Perempuan | Pontianak      | 1991-04-25 |        2 |         3 | Jl. Mangga Besar No. 20, Jakarta       |
+|  9 | 76543 | Rudi Wijaya     | Laki-Laki | Bandar Lampung | 1998-12-17 |        2 |         4 | Jl. Puri Indah No. 18, Tangerang       |
+| 10 | 54321 | Hendra Pratama  | Laki-Laki | Makassar       | 1993-08-19 |        2 |         4 | Jl. Kuningan Barat No. 3, Jakarta      |
+| 11 | 10579 | Diara Putri     | Perempuan | Bandung        | 1980-07-05 |        3 |         1 | Jl. Cipinang Muara No. 2, Jakarta      |
+| 12 | 27680 | Rahmat Nugroho  | Laki-Laki | Semarang       | 1980-12-20 |        3 |         2 | Jl. Tebet Timur No. 14, Jakarta        |
+| 13 | 35741 | Sulis Setiadi   | Laki-Laki | Balikpapan     | 1989-10-30 |        3 |         3 | Jl. Duri Kepa No. 9, Jakarta           |
+| 14 | 43802 | Sinta Wulandari | Perempuan | Malang         | 1996-02-14 |        3 |         4 | Jl. Meruya Selatan No. 7, Tangerang    |
+| 15 | 57953 | Lia Puspita     | Perempuan | Surabaya       | 1994-09-11 |        3 |         4 | Jl. Bintaro Utama No. 6, Tangerang     |
+| 16 | 56799 | Fajar Setiawan  | Laki-Laki | Bogor          | 1981-08-28 |        4 |         1 | Jl. Slipi Jaya No. 3, Jakarta          |
+| 17 | 15678 | Maya Sari       | Perempuan | Denpasar       | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta    |
+| 18 | 34067 | Dewa Nugraha    | Laki-Laki | Manado         | 1987-04-08 |        4 |         3 | Jl. Cilandak Barat No. 4, Tangerang    |
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+----------------------------------------+
+18 rows in set (0.001 sec)
+
+
+MariaDB [dbpegawai]> ALTER TABLE pegawai ADD COLUMN berat_badan FLOAT NOT NULL;
+Query OK, 0 rows affected (0.027 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET berat_badan = ROUND(RAND() * (75 - 40) + 40, 2);
+Query OK, 18 rows affected (0.012 sec)
+Rows matched: 18  Changed: 18  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+----------------------------------------+-------------+
+| id | nip   | nama            | gender    | tmp_lahir      | tgl_lahir  | iddivisi | idjabatan | alamat                                 | berat_badan |
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+----------------------------------------+-------------+
+|  1 | 67890 | Bambang Kusuma  | Laki-Laki | Medan          | 1983-08-21 |        1 |         1 | Jl. Melati No. 8, Jakarta              |       48.13 |
+|  2 | 78901 | Dewi Citra      | Perempuan | Palembang      | 1990-05-17 |        1 |         4 | Jl. Anggrek No. 15, Tangerang          |       74.37 |
+|  3 | 89012 | Cindy Rahayu    | Perempuan | Pontianak      | 1988-12-30 |        1 |         3 | Jl. Mangga Dua No. 10, Jakarta         |       47.49 |
+|  4 | 90123 | Muhammad Sadam  | Laki-Laki | Gorontalo      | 1981-08-03 |        1 |         2 | Jl. Sawangan Indah No. 5, Depok        |       44.33 |
+|  5 | 12340 | Asep Darmanto   | Laki-Laki | Solo           | 1993-09-05 |        1 |         4 | Jl. Lenteng Agung Raya No. 20, Jakarta |       74.16 |
+|  6 | 87654 | Sari Indah      | Perempuan | Palembang      | 1983-06-08 |        2 |         1 | Jl. Tomang Raya No. 12, Jakarta        |       57.84 |
+|  7 | 98765 | Budi Santoso    | Laki-Laki | Jakarta        | 1978-11-22 |        2 |         2 | Jl. Setia Warga No. 1, Bekasi          |        61.7 |
+|  8 | 65432 | Ani Susanti     | Perempuan | Pontianak      | 1991-04-25 |        2 |         3 | Jl. Mangga Besar No. 20, Jakarta       |       59.97 |
+|  9 | 76543 | Rudi Wijaya     | Laki-Laki | Bandar Lampung | 1998-12-17 |        2 |         4 | Jl. Puri Indah No. 18, Tangerang       |       74.74 |
+| 10 | 54321 | Hendra Pratama  | Laki-Laki | Makassar       | 1993-08-19 |        2 |         4 | Jl. Kuningan Barat No. 3, Jakarta      |       48.82 |
+| 11 | 10579 | Diara Putri     | Perempuan | Bandung        | 1980-07-05 |        3 |         1 | Jl. Cipinang Muara No. 2, Jakarta      |       49.88 |
+| 12 | 27680 | Rahmat Nugroho  | Laki-Laki | Semarang       | 1980-12-20 |        3 |         2 | Jl. Tebet Timur No. 14, Jakarta        |       62.92 |
+| 13 | 35741 | Sulis Setiadi   | Laki-Laki | Balikpapan     | 1989-10-30 |        3 |         3 | Jl. Duri Kepa No. 9, Jakarta           |       54.95 |
+| 14 | 43802 | Sinta Wulandari | Perempuan | Malang         | 1996-02-14 |        3 |         4 | Jl. Meruya Selatan No. 7, Tangerang    |          46 |
+| 15 | 57953 | Lia Puspita     | Perempuan | Surabaya       | 1994-09-11 |        3 |         4 | Jl. Bintaro Utama No. 6, Tangerang     |       60.16 |
+| 16 | 56799 | Fajar Setiawan  | Laki-Laki | Bogor          | 1981-08-28 |        4 |         1 | Jl. Slipi Jaya No. 3, Jakarta          |        52.8 |
+| 17 | 15678 | Maya Sari       | Perempuan | Denpasar       | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta    |       43.52 |
+| 18 | 34067 | Dewa Nugraha    | Laki-Laki | Manado         | 1987-04-08 |        4 |         3 | Jl. Cilandak Barat No. 4, Tangerang    |       54.18 |
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+----------------------------------------+-------------+
+18 rows in set (0.001 sec)
+
+
+MariaDB [dbpegawai]> ALTER TABLE pegawai ADD COLUMN umur INT NOT NULL;
+Query OK, 0 rows affected (0.016 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> UPDATE pegawai
+    -> SET umur = TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE());
+Query OK, 18 rows affected (0.014 sec)
+Rows matched: 18  Changed: 18  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+| id | nip   | nama            | gender    | tmp_lahir      | tgl_lahir  | iddivisi | idjabatan | alamat                                 | berat_badan | umur |
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+|  1 | 67890 | Bambang Kusuma  | Laki-Laki | Medan          | 1983-08-21 |        1 |         1 | Jl. Melati No. 8, Jakarta              |       48.13 |   40 |
+|  2 | 78901 | Dewi Citra      | Perempuan | Palembang      | 1990-05-17 |        1 |         4 | Jl. Anggrek No. 15, Tangerang          |       74.37 |   33 |
+|  3 | 89012 | Cindy Rahayu    | Perempuan | Pontianak      | 1988-12-30 |        1 |         3 | Jl. Mangga Dua No. 10, Jakarta         |       47.49 |   35 |
+|  4 | 90123 | Muhammad Sadam  | Laki-Laki | Gorontalo      | 1981-08-03 |        1 |         2 | Jl. Sawangan Indah No. 5, Depok        |       44.33 |   42 |
+|  5 | 12340 | Asep Darmanto   | Laki-Laki | Solo           | 1993-09-05 |        1 |         4 | Jl. Lenteng Agung Raya No. 20, Jakarta |       74.16 |   30 |
+|  6 | 87654 | Sari Indah      | Perempuan | Palembang      | 1983-06-08 |        2 |         1 | Jl. Tomang Raya No. 12, Jakarta        |       57.84 |   40 |
+|  7 | 98765 | Budi Santoso    | Laki-Laki | Jakarta        | 1978-11-22 |        2 |         2 | Jl. Setia Warga No. 1, Bekasi          |        61.7 |   45 |
+|  8 | 65432 | Ani Susanti     | Perempuan | Pontianak      | 1991-04-25 |        2 |         3 | Jl. Mangga Besar No. 20, Jakarta       |       59.97 |   32 |
+|  9 | 76543 | Rudi Wijaya     | Laki-Laki | Bandar Lampung | 1998-12-17 |        2 |         4 | Jl. Puri Indah No. 18, Tangerang       |       74.74 |   25 |
+| 10 | 54321 | Hendra Pratama  | Laki-Laki | Makassar       | 1993-08-19 |        2 |         4 | Jl. Kuningan Barat No. 3, Jakarta      |       48.82 |   30 |
+| 11 | 10579 | Diara Putri     | Perempuan | Bandung        | 1980-07-05 |        3 |         1 | Jl. Cipinang Muara No. 2, Jakarta      |       49.88 |   43 |
+| 12 | 27680 | Rahmat Nugroho  | Laki-Laki | Semarang       | 1980-12-20 |        3 |         2 | Jl. Tebet Timur No. 14, Jakarta        |       62.92 |   41 |
+| 13 | 35741 | Sulis Setiadi   | Laki-Laki | Balikpapan     | 1989-10-30 |        3 |         3 | Jl. Duri Kepa No. 9, Jakarta           |       54.95 |   34 |
+| 14 | 43802 | Sinta Wulandari | Perempuan | Malang         | 1996-02-14 |        3 |         4 | Jl. Meruya Selatan No. 7, Tangerang    |          46 |   28 |
+| 15 | 57953 | Lia Puspita     | Perempuan | Surabaya       | 1994-09-11 |        3 |         4 | Jl. Bintaro Utama No. 6, Tangerang     |       60.16 |   29 |
+| 16 | 56799 | Fajar Setiawan  | Laki-Laki | Bogor          | 1981-08-28 |        4 |         1 | Jl. Slipi Jaya No. 3, Jakarta          |        52.8 |   42 |
+| 17 | 15678 | Maya Sari       | Perempuan | Denpasar       | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta    |       43.52 |   40 |
+| 18 | 34067 | Dewa Nugraha    | Laki-Laki | Manado         | 1987-04-08 |        4 |         3 | Jl. Cilandak Barat No. 4, Tangerang    |       54.18 |   37 |
++----+-------+-----------------+-----------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> ALTER TABLE pegawai
+    -> CHANGE COLUMN gender jenis_kelamin ENUM('Laki-Laki', 'Perempuan') NOT NULL;
+Query OK, 0 rows affected (0.025 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai;
++----+-------+-----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir      | tgl_lahir  | iddivisi | idjabatan | alamat                                 | berat_badan | umur |
++----+-------+-----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+|  1 | 67890 | Bambang Kusuma  | Laki-Laki     | Medan          | 1983-08-21 |        1 |         1 | Jl. Melati No. 8, Jakarta              |       48.13 |   40 |
+|  2 | 78901 | Dewi Citra      | Perempuan     | Palembang      | 1990-05-17 |        1 |         4 | Jl. Anggrek No. 15, Tangerang          |       74.37 |   33 |
+|  3 | 89012 | Cindy Rahayu    | Perempuan     | Pontianak      | 1988-12-30 |        1 |         3 | Jl. Mangga Dua No. 10, Jakarta         |       47.49 |   35 |
+|  4 | 90123 | Muhammad Sadam  | Laki-Laki     | Gorontalo      | 1981-08-03 |        1 |         2 | Jl. Sawangan Indah No. 5, Depok        |       44.33 |   42 |
+|  5 | 12340 | Asep Darmanto   | Laki-Laki     | Solo           | 1993-09-05 |        1 |         4 | Jl. Lenteng Agung Raya No. 20, Jakarta |       74.16 |   30 |
+|  6 | 87654 | Sari Indah      | Perempuan     | Palembang      | 1983-06-08 |        2 |         1 | Jl. Tomang Raya No. 12, Jakarta        |       57.84 |   40 |
+|  7 | 98765 | Budi Santoso    | Laki-Laki     | Jakarta        | 1978-11-22 |        2 |         2 | Jl. Setia Warga No. 1, Bekasi          |        61.7 |   45 |
+|  8 | 65432 | Ani Susanti     | Perempuan     | Pontianak      | 1991-04-25 |        2 |         3 | Jl. Mangga Besar No. 20, Jakarta       |       59.97 |   32 |
+|  9 | 76543 | Rudi Wijaya     | Laki-Laki     | Bandar Lampung | 1998-12-17 |        2 |         4 | Jl. Puri Indah No. 18, Tangerang       |       74.74 |   25 |
+| 10 | 54321 | Hendra Pratama  | Laki-Laki     | Makassar       | 1993-08-19 |        2 |         4 | Jl. Kuningan Barat No. 3, Jakarta      |       48.82 |   30 |
+| 11 | 10579 | Diara Putri     | Perempuan     | Bandung        | 1980-07-05 |        3 |         1 | Jl. Cipinang Muara No. 2, Jakarta      |       49.88 |   43 |
+| 12 | 27680 | Rahmat Nugroho  | Laki-Laki     | Semarang       | 1980-12-20 |        3 |         2 | Jl. Tebet Timur No. 14, Jakarta        |       62.92 |   41 |
+| 13 | 35741 | Sulis Setiadi   | Laki-Laki     | Balikpapan     | 1989-10-30 |        3 |         3 | Jl. Duri Kepa No. 9, Jakarta           |       54.95 |   34 |
+| 14 | 43802 | Sinta Wulandari | Perempuan     | Malang         | 1996-02-14 |        3 |         4 | Jl. Meruya Selatan No. 7, Tangerang    |          46 |   28 |
+| 15 | 57953 | Lia Puspita     | Perempuan     | Surabaya       | 1994-09-11 |        3 |         4 | Jl. Bintaro Utama No. 6, Tangerang     |       60.16 |   29 |
+| 16 | 56799 | Fajar Setiawan  | Laki-Laki     | Bogor          | 1981-08-28 |        4 |         1 | Jl. Slipi Jaya No. 3, Jakarta          |        52.8 |   42 |
+| 17 | 15678 | Maya Sari       | Perempuan     | Denpasar       | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta    |       43.52 |   40 |
+| 18 | 34067 | Dewa Nugraha    | Laki-Laki     | Manado         | 1987-04-08 |        4 |         3 | Jl. Cilandak Barat No. 4, Tangerang    |       54.18 |   37 |
++----+-------+-----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT nip, nama, jenis_kelamin, alamat FROM pegawai;
++-------+-----------------+---------------+----------------------------------------+
+| nip   | nama            | jenis_kelamin | alamat                                 |
++-------+-----------------+---------------+----------------------------------------+
+| 67890 | Bambang Kusuma  | Laki-Laki     | Jl. Melati No. 8, Jakarta              |
+| 78901 | Dewi Citra      | Perempuan     | Jl. Anggrek No. 15, Tangerang          |
+| 89012 | Cindy Rahayu    | Perempuan     | Jl. Mangga Dua No. 10, Jakarta         |
+| 90123 | Muhammad Sadam  | Laki-Laki     | Jl. Sawangan Indah No. 5, Depok        |
+| 12340 | Asep Darmanto   | Laki-Laki     | Jl. Lenteng Agung Raya No. 20, Jakarta |
+| 87654 | Sari Indah      | Perempuan     | Jl. Tomang Raya No. 12, Jakarta        |
+| 98765 | Budi Santoso    | Laki-Laki     | Jl. Setia Warga No. 1, Bekasi          |
+| 65432 | Ani Susanti     | Perempuan     | Jl. Mangga Besar No. 20, Jakarta       |
+| 76543 | Rudi Wijaya     | Laki-Laki     | Jl. Puri Indah No. 18, Tangerang       |
+| 54321 | Hendra Pratama  | Laki-Laki     | Jl. Kuningan Barat No. 3, Jakarta      |
+| 10579 | Diara Putri     | Perempuan     | Jl. Cipinang Muara No. 2, Jakarta      |
+| 27680 | Rahmat Nugroho  | Laki-Laki     | Jl. Tebet Timur No. 14, Jakarta        |
+| 35741 | Sulis Setiadi   | Laki-Laki     | Jl. Duri Kepa No. 9, Jakarta           |
+| 43802 | Sinta Wulandari | Perempuan     | Jl. Meruya Selatan No. 7, Tangerang    |
+| 57953 | Lia Puspita     | Perempuan     | Jl. Bintaro Utama No. 6, Tangerang     |
+| 56799 | Fajar Setiawan  | Laki-Laki     | Jl. Slipi Jaya No. 3, Jakarta          |
+| 15678 | Maya Sari       | Perempuan     | Jl. Kramat Sentiong No. 16, Jakarta    |
+| 34067 | Dewa Nugraha    | Laki-Laki     | Jl. Cilandak Barat No. 4, Tangerang    |
++-------+-----------------+---------------+----------------------------------------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE jenis_kelamin = 'Laki-Laki';
++----+-------+----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+| id | nip   | nama           | jenis_kelamin | tmp_lahir      | tgl_lahir  | iddivisi | idjabatan | alamat                                 | berat_badan | umur |
++----+-------+----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+|  1 | 67890 | Bambang Kusuma | Laki-Laki     | Medan          | 1983-08-21 |        1 |         1 | Jl. Melati No. 8, Jakarta              |       48.13 |   40 |
+|  4 | 90123 | Muhammad Sadam | Laki-Laki     | Gorontalo      | 1981-08-03 |        1 |         2 | Jl. Sawangan Indah No. 5, Depok        |       44.33 |   42 |
+|  5 | 12340 | Asep Darmanto  | Laki-Laki     | Solo           | 1993-09-05 |        1 |         4 | Jl. Lenteng Agung Raya No. 20, Jakarta |       74.16 |   30 |
+|  7 | 98765 | Budi Santoso   | Laki-Laki     | Jakarta        | 1978-11-22 |        2 |         2 | Jl. Setia Warga No. 1, Bekasi          |        61.7 |   45 |
+|  9 | 76543 | Rudi Wijaya    | Laki-Laki     | Bandar Lampung | 1998-12-17 |        2 |         4 | Jl. Puri Indah No. 18, Tangerang       |       74.74 |   25 |
+| 10 | 54321 | Hendra Pratama | Laki-Laki     | Makassar       | 1993-08-19 |        2 |         4 | Jl. Kuningan Barat No. 3, Jakarta      |       48.82 |   30 |
+| 12 | 27680 | Rahmat Nugroho | Laki-Laki     | Semarang       | 1980-12-20 |        3 |         2 | Jl. Tebet Timur No. 14, Jakarta        |       62.92 |   41 |
+| 13 | 35741 | Sulis Setiadi  | Laki-Laki     | Balikpapan     | 1989-10-30 |        3 |         3 | Jl. Duri Kepa No. 9, Jakarta           |       54.95 |   34 |
+| 16 | 56799 | Fajar Setiawan | Laki-Laki     | Bogor          | 1981-08-28 |        4 |         1 | Jl. Slipi Jaya No. 3, Jakarta          |        52.8 |   42 |
+| 18 | 34067 | Dewa Nugraha   | Laki-Laki     | Manado         | 1987-04-08 |        4 |         3 | Jl. Cilandak Barat No. 4, Tangerang    |       54.18 |   37 |
++----+-------+----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+10 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE iddivisi = 4 AND jenis_kelamin = 'perempuan';
++----+-------+-----------+---------------+-----------+------------+----------+-----------+-------------------------------------+-------------+------+
+| id | nip   | nama      | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat                              | berat_badan | umur |
++----+-------+-----------+---------------+-----------+------------+----------+-----------+-------------------------------------+-------------+------+
+| 17 | 15678 | Maya Sari | Perempuan     | Denpasar  | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta |       43.52 |   40 |
++----+-------+-----------+---------------+-----------+------------+----------+-----------+-------------------------------------+-------------+------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) > 30 AND tmp_lahir = 'Jakarta';
++----+-------+--------------+---------------+-----------+------------+----------+-----------+-------------------------------+-------------+------+
+| id | nip   | nama         | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat                        | berat_badan | umur |
++----+-------+--------------+---------------+-----------+------------+----------+-----------+-------------------------------+-------------+------+
+|  7 | 98765 | Budi Santoso | Laki-Laki     | Jakarta   | 1978-11-22 |        2 |         2 | Jl. Setia Warga No. 1, Bekasi |        61.7 |   45 |
++----+-------+--------------+---------------+-----------+------------+----------+-----------+-------------------------------+-------------+------+
+1 row in set (0.001 sec)
+
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE iddivisi = 3 AND TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) > 30 AND jenis_kelamin = 'perempuan';
++----+-------+-------------+---------------+-----------+------------+----------+-----------+-----------------------------------+-------------+------+
+| id | nip   | nama        | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat                            | berat_badan | umur |
++----+-------+-------------+---------------+-----------+------------+----------+-----------+-----------------------------------+-------------+------+
+| 11 | 10579 | Diara Putri | Perempuan     | Bandung   | 1980-07-05 |        3 |         1 | Jl. Cipinang Muara No. 2, Jakarta |       49.88 |   43 |
++----+-------+-------------+---------------+-----------+------------+----------+-----------+-----------------------------------+-------------+------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE nip = '54321';
++----+-------+----------------+---------------+-----------+------------+----------+-----------+-----------------------------------+-------------+------+
+| id | nip   | nama           | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat                            | berat_badan | umur |
++----+-------+----------------+---------------+-----------+------------+----------+-----------+-----------------------------------+-------------+------+
+| 10 | 54321 | Hendra Pratama | Laki-Laki     | Makassar  | 1993-08-19 |        2 |         4 | Jl. Kuningan Barat No. 3, Jakarta |       48.82 |   30 |
++----+-------+----------------+---------------+-----------+------------+----------+-----------+-----------------------------------+-------------+------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE jenis_kelamin = 'perempuan';
++----+-------+-----------------+---------------+-----------+------------+----------+-----------+-------------------------------------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat                              | berat_badan | umur |
++----+-------+-----------------+---------------+-----------+------------+----------+-----------+-------------------------------------+-------------+------+
+|  2 | 78901 | Dewi Citra      | Perempuan     | Palembang | 1990-05-17 |        1 |         4 | Jl. Anggrek No. 15, Tangerang       |       74.37 |   33 |
+|  3 | 89012 | Cindy Rahayu    | Perempuan     | Pontianak | 1988-12-30 |        1 |         3 | Jl. Mangga Dua No. 10, Jakarta      |       47.49 |   35 |
+|  6 | 87654 | Sari Indah      | Perempuan     | Palembang | 1983-06-08 |        2 |         1 | Jl. Tomang Raya No. 12, Jakarta     |       57.84 |   40 |
+|  8 | 65432 | Ani Susanti     | Perempuan     | Pontianak | 1991-04-25 |        2 |         3 | Jl. Mangga Besar No. 20, Jakarta    |       59.97 |   32 |
+| 11 | 10579 | Diara Putri     | Perempuan     | Bandung   | 1980-07-05 |        3 |         1 | Jl. Cipinang Muara No. 2, Jakarta   |       49.88 |   43 |
+| 14 | 43802 | Sinta Wulandari | Perempuan     | Malang    | 1996-02-14 |        3 |         4 | Jl. Meruya Selatan No. 7, Tangerang |          46 |   28 |
+| 15 | 57953 | Lia Puspita     | Perempuan     | Surabaya  | 1994-09-11 |        3 |         4 | Jl. Bintaro Utama No. 6, Tangerang  |       60.16 |   29 |
+| 17 | 15678 | Maya Sari       | Perempuan     | Denpasar  | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta |       43.52 |   40 |
++----+-------+-----------------+---------------+-----------+------------+----------+-----------+-------------------------------------+-------------+------+
+8 rows in set (0.001 sec)
+
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE nip IN ('15678', '65432', '76543', '56799');
++----+-------+----------------+---------------+----------------+------------+----------+-----------+-------------------------------------+-------------+------+
+| id | nip   | nama           | jenis_kelamin | tmp_lahir      | tgl_lahir  | iddivisi | idjabatan | alamat                              | berat_badan | umur |
++----+-------+----------------+---------------+----------------+------------+----------+-----------+-------------------------------------+-------------+------+
+|  8 | 65432 | Ani Susanti    | Perempuan     | Pontianak      | 1991-04-25 |        2 |         3 | Jl. Mangga Besar No. 20, Jakarta    |       59.97 |   32 |
+|  9 | 76543 | Rudi Wijaya    | Laki-Laki     | Bandar Lampung | 1998-12-17 |        2 |         4 | Jl. Puri Indah No. 18, Tangerang    |       74.74 |   25 |
+| 16 | 56799 | Fajar Setiawan | Laki-Laki     | Bogor          | 1981-08-28 |        4 |         1 | Jl. Slipi Jaya No. 3, Jakarta       |        52.8 |   42 |
+| 17 | 15678 | Maya Sari      | Perempuan     | Denpasar       | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta |       43.52 |   40 |
++----+-------+----------------+---------------+----------------+------------+----------+-----------+-------------------------------------+-------------+------+
+4 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE tmp_lahir NOT IN ('Jakarta', 'Surabaya', 'Bandung', 'Bogor', 'Solo');
++----+-------+-----------------+---------------+----------------+------------+----------+-----------+-------------------------------------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir      | tgl_lahir  | iddivisi | idjabatan | alamat                              | berat_badan | umur |
++----+-------+-----------------+---------------+----------------+------------+----------+-----------+-------------------------------------+-------------+------+
+|  1 | 67890 | Bambang Kusuma  | Laki-Laki     | Medan          | 1983-08-21 |        1 |         1 | Jl. Melati No. 8, Jakarta           |       48.13 |   40 |
+|  2 | 78901 | Dewi Citra      | Perempuan     | Palembang      | 1990-05-17 |        1 |         4 | Jl. Anggrek No. 15, Tangerang       |       74.37 |   33 |
+|  3 | 89012 | Cindy Rahayu    | Perempuan     | Pontianak      | 1988-12-30 |        1 |         3 | Jl. Mangga Dua No. 10, Jakarta      |       47.49 |   35 |
+|  4 | 90123 | Muhammad Sadam  | Laki-Laki     | Gorontalo      | 1981-08-03 |        1 |         2 | Jl. Sawangan Indah No. 5, Depok     |       44.33 |   42 |
+|  6 | 87654 | Sari Indah      | Perempuan     | Palembang      | 1983-06-08 |        2 |         1 | Jl. Tomang Raya No. 12, Jakarta     |       57.84 |   40 |
+|  8 | 65432 | Ani Susanti     | Perempuan     | Pontianak      | 1991-04-25 |        2 |         3 | Jl. Mangga Besar No. 20, Jakarta    |       59.97 |   32 |
+|  9 | 76543 | Rudi Wijaya     | Laki-Laki     | Bandar Lampung | 1998-12-17 |        2 |         4 | Jl. Puri Indah No. 18, Tangerang    |       74.74 |   25 |
+| 10 | 54321 | Hendra Pratama  | Laki-Laki     | Makassar       | 1993-08-19 |        2 |         4 | Jl. Kuningan Barat No. 3, Jakarta   |       48.82 |   30 |
+| 12 | 27680 | Rahmat Nugroho  | Laki-Laki     | Semarang       | 1980-12-20 |        3 |         2 | Jl. Tebet Timur No. 14, Jakarta     |       62.92 |   41 |
+| 13 | 35741 | Sulis Setiadi   | Laki-Laki     | Balikpapan     | 1989-10-30 |        3 |         3 | Jl. Duri Kepa No. 9, Jakarta        |       54.95 |   34 |
+| 14 | 43802 | Sinta Wulandari | Perempuan     | Malang         | 1996-02-14 |        3 |         4 | Jl. Meruya Selatan No. 7, Tangerang |          46 |   28 |
+| 17 | 15678 | Maya Sari       | Perempuan     | Denpasar       | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta |       43.52 |   40 |
+| 18 | 34067 | Dewa Nugraha    | Laki-Laki     | Manado         | 1987-04-08 |        4 |         3 | Jl. Cilandak Barat No. 4, Tangerang |       54.18 |   37 |
++----+-------+-----------------+---------------+----------------+------------+----------+-----------+-------------------------------------+-------------+------+
+13 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai ORDER BY nama ASC;
++----+-------+-----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir      | tgl_lahir  | iddivisi | idjabatan | alamat                                 | berat_badan | umur |
++----+-------+-----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+|  8 | 65432 | Ani Susanti     | Perempuan     | Pontianak      | 1991-04-25 |        2 |         3 | Jl. Mangga Besar No. 20, Jakarta       |       59.97 |   32 |
+|  5 | 12340 | Asep Darmanto   | Laki-Laki     | Solo           | 1993-09-05 |        1 |         4 | Jl. Lenteng Agung Raya No. 20, Jakarta |       74.16 |   30 |
+|  1 | 67890 | Bambang Kusuma  | Laki-Laki     | Medan          | 1983-08-21 |        1 |         1 | Jl. Melati No. 8, Jakarta              |       48.13 |   40 |
+|  7 | 98765 | Budi Santoso    | Laki-Laki     | Jakarta        | 1978-11-22 |        2 |         2 | Jl. Setia Warga No. 1, Bekasi          |        61.7 |   45 |
+|  3 | 89012 | Cindy Rahayu    | Perempuan     | Pontianak      | 1988-12-30 |        1 |         3 | Jl. Mangga Dua No. 10, Jakarta         |       47.49 |   35 |
+| 18 | 34067 | Dewa Nugraha    | Laki-Laki     | Manado         | 1987-04-08 |        4 |         3 | Jl. Cilandak Barat No. 4, Tangerang    |       54.18 |   37 |
+|  2 | 78901 | Dewi Citra      | Perempuan     | Palembang      | 1990-05-17 |        1 |         4 | Jl. Anggrek No. 15, Tangerang          |       74.37 |   33 |
+| 11 | 10579 | Diara Putri     | Perempuan     | Bandung        | 1980-07-05 |        3 |         1 | Jl. Cipinang Muara No. 2, Jakarta      |       49.88 |   43 |
+| 16 | 56799 | Fajar Setiawan  | Laki-Laki     | Bogor          | 1981-08-28 |        4 |         1 | Jl. Slipi Jaya No. 3, Jakarta          |        52.8 |   42 |
+| 10 | 54321 | Hendra Pratama  | Laki-Laki     | Makassar       | 1993-08-19 |        2 |         4 | Jl. Kuningan Barat No. 3, Jakarta      |       48.82 |   30 |
+| 15 | 57953 | Lia Puspita     | Perempuan     | Surabaya       | 1994-09-11 |        3 |         4 | Jl. Bintaro Utama No. 6, Tangerang     |       60.16 |   29 |
+| 17 | 15678 | Maya Sari       | Perempuan     | Denpasar       | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta    |       43.52 |   40 |
+|  4 | 90123 | Muhammad Sadam  | Laki-Laki     | Gorontalo      | 1981-08-03 |        1 |         2 | Jl. Sawangan Indah No. 5, Depok        |       44.33 |   42 |
+| 12 | 27680 | Rahmat Nugroho  | Laki-Laki     | Semarang       | 1980-12-20 |        3 |         2 | Jl. Tebet Timur No. 14, Jakarta        |       62.92 |   41 |
+|  9 | 76543 | Rudi Wijaya     | Laki-Laki     | Bandar Lampung | 1998-12-17 |        2 |         4 | Jl. Puri Indah No. 18, Tangerang       |       74.74 |   25 |
+|  6 | 87654 | Sari Indah      | Perempuan     | Palembang      | 1983-06-08 |        2 |         1 | Jl. Tomang Raya No. 12, Jakarta        |       57.84 |   40 |
+| 14 | 43802 | Sinta Wulandari | Perempuan     | Malang         | 1996-02-14 |        3 |         4 | Jl. Meruya Selatan No. 7, Tangerang    |          46 |   28 |
+| 13 | 35741 | Sulis Setiadi   | Laki-Laki     | Balikpapan     | 1989-10-30 |        3 |         3 | Jl. Duri Kepa No. 9, Jakarta           |       54.95 |   34 |
++----+-------+-----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai ORDER BY berat_badan DESC;
++----+-------+-----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir      | tgl_lahir  | iddivisi | idjabatan | alamat                                 | berat_badan | umur |
++----+-------+-----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+|  9 | 76543 | Rudi Wijaya     | Laki-Laki     | Bandar Lampung | 1998-12-17 |        2 |         4 | Jl. Puri Indah No. 18, Tangerang       |       74.74 |   25 |
+|  2 | 78901 | Dewi Citra      | Perempuan     | Palembang      | 1990-05-17 |        1 |         4 | Jl. Anggrek No. 15, Tangerang          |       74.37 |   33 |
+|  5 | 12340 | Asep Darmanto   | Laki-Laki     | Solo           | 1993-09-05 |        1 |         4 | Jl. Lenteng Agung Raya No. 20, Jakarta |       74.16 |   30 |
+| 12 | 27680 | Rahmat Nugroho  | Laki-Laki     | Semarang       | 1980-12-20 |        3 |         2 | Jl. Tebet Timur No. 14, Jakarta        |       62.92 |   41 |
+|  7 | 98765 | Budi Santoso    | Laki-Laki     | Jakarta        | 1978-11-22 |        2 |         2 | Jl. Setia Warga No. 1, Bekasi          |        61.7 |   45 |
+| 15 | 57953 | Lia Puspita     | Perempuan     | Surabaya       | 1994-09-11 |        3 |         4 | Jl. Bintaro Utama No. 6, Tangerang     |       60.16 |   29 |
+|  8 | 65432 | Ani Susanti     | Perempuan     | Pontianak      | 1991-04-25 |        2 |         3 | Jl. Mangga Besar No. 20, Jakarta       |       59.97 |   32 |
+|  6 | 87654 | Sari Indah      | Perempuan     | Palembang      | 1983-06-08 |        2 |         1 | Jl. Tomang Raya No. 12, Jakarta        |       57.84 |   40 |
+| 13 | 35741 | Sulis Setiadi   | Laki-Laki     | Balikpapan     | 1989-10-30 |        3 |         3 | Jl. Duri Kepa No. 9, Jakarta           |       54.95 |   34 |
+| 18 | 34067 | Dewa Nugraha    | Laki-Laki     | Manado         | 1987-04-08 |        4 |         3 | Jl. Cilandak Barat No. 4, Tangerang    |       54.18 |   37 |
+| 16 | 56799 | Fajar Setiawan  | Laki-Laki     | Bogor          | 1981-08-28 |        4 |         1 | Jl. Slipi Jaya No. 3, Jakarta          |        52.8 |   42 |
+| 11 | 10579 | Diara Putri     | Perempuan     | Bandung        | 1980-07-05 |        3 |         1 | Jl. Cipinang Muara No. 2, Jakarta      |       49.88 |   43 |
+| 10 | 54321 | Hendra Pratama  | Laki-Laki     | Makassar       | 1993-08-19 |        2 |         4 | Jl. Kuningan Barat No. 3, Jakarta      |       48.82 |   30 |
+|  1 | 67890 | Bambang Kusuma  | Laki-Laki     | Medan          | 1983-08-21 |        1 |         1 | Jl. Melati No. 8, Jakarta              |       48.13 |   40 |
+|  3 | 89012 | Cindy Rahayu    | Perempuan     | Pontianak      | 1988-12-30 |        1 |         3 | Jl. Mangga Dua No. 10, Jakarta         |       47.49 |   35 |
+| 14 | 43802 | Sinta Wulandari | Perempuan     | Malang         | 1996-02-14 |        3 |         4 | Jl. Meruya Selatan No. 7, Tangerang    |          46 |   28 |
+|  4 | 90123 | Muhammad Sadam  | Laki-Laki     | Gorontalo      | 1981-08-03 |        1 |         2 | Jl. Sawangan Indah No. 5, Depok        |       44.33 |   42 |
+| 17 | 15678 | Maya Sari       | Perempuan     | Denpasar       | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta    |       43.52 |   40 |
++----+-------+-----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+18 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai ORDER BY berat_badan DESC LIMIT 5;
++----+-------+----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+| id | nip   | nama           | jenis_kelamin | tmp_lahir      | tgl_lahir  | iddivisi | idjabatan | alamat                                 | berat_badan | umur |
++----+-------+----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+|  9 | 76543 | Rudi Wijaya    | Laki-Laki     | Bandar Lampung | 1998-12-17 |        2 |         4 | Jl. Puri Indah No. 18, Tangerang       |       74.74 |   25 |
+|  2 | 78901 | Dewi Citra     | Perempuan     | Palembang      | 1990-05-17 |        1 |         4 | Jl. Anggrek No. 15, Tangerang          |       74.37 |   33 |
+|  5 | 12340 | Asep Darmanto  | Laki-Laki     | Solo           | 1993-09-05 |        1 |         4 | Jl. Lenteng Agung Raya No. 20, Jakarta |       74.16 |   30 |
+| 12 | 27680 | Rahmat Nugroho | Laki-Laki     | Semarang       | 1980-12-20 |        3 |         2 | Jl. Tebet Timur No. 14, Jakarta        |       62.92 |   41 |
+|  7 | 98765 | Budi Santoso   | Laki-Laki     | Jakarta        | 1978-11-22 |        2 |         2 | Jl. Setia Warga No. 1, Bekasi          |        61.7 |   45 |
++----+-------+----------------+---------------+----------------+------------+----------+-----------+----------------------------------------+-------------+------+
+5 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai LIMIT 5 OFFSET 13;
++----+-------+-----------------+---------------+-----------+------------+----------+-----------+-------------------------------------+-------------+------+
+| id | nip   | nama            | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat                              | berat_badan | umur |
++----+-------+-----------------+---------------+-----------+------------+----------+-----------+-------------------------------------+-------------+------+
+| 14 | 43802 | Sinta Wulandari | Perempuan     | Malang    | 1996-02-14 |        3 |         4 | Jl. Meruya Selatan No. 7, Tangerang |          46 |   28 |
+| 15 | 57953 | Lia Puspita     | Perempuan     | Surabaya  | 1994-09-11 |        3 |         4 | Jl. Bintaro Utama No. 6, Tangerang  |       60.16 |   29 |
+| 16 | 56799 | Fajar Setiawan  | Laki-Laki     | Bogor     | 1981-08-28 |        4 |         1 | Jl. Slipi Jaya No. 3, Jakarta       |        52.8 |   42 |
+| 17 | 15678 | Maya Sari       | Perempuan     | Denpasar  | 1984-03-17 |        4 |         2 | Jl. Kramat Sentiong No. 16, Jakarta |       43.52 |   40 |
+| 18 | 34067 | Dewa Nugraha    | Laki-Laki     | Manado    | 1987-04-08 |        4 |         3 | Jl. Cilandak Barat No. 4, Tangerang |       54.18 |   37 |
++----+-------+-----------------+---------------+-----------+------------+----------+-----------+-------------------------------------+-------------+------+
+5 rows in set (0.001 sec)
+
+
+MariaDB [dbpegawai]> SELECT COUNT(*) AS jumlah_pegawai FROM pegawai;
++----------------+
+| jumlah_pegawai |
++----------------+
+|             18 |
++----------------+
+1 row in set (0.001 sec)
+
+
+MariaDB [dbpegawai]> SELECT nip, nama, TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) AS umur FROM pegawai
+    -> WHERE TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) = (SELECT MAX(TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE())) FROM pegawai);
++-------+--------------+------+
+| nip   | nama         | umur |
++-------+--------------+------+
+| 98765 | Budi Santoso |   45 |
++-------+--------------+------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT nip, nama, berat_badan FROM pegawai WHERE berat_badan = (SELECT MIN(berat_badan) FROM pegawai);
++-------+-----------+-------------+
+| nip   | nama      | berat_badan |
++-------+-----------+-------------+
+| 15678 | Maya Sari |       43.52 |
++-------+-----------+-------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT AVG(TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE())) AS rata_rata_umur FROM pegawai;
++----------------+
+| rata_rata_umur |
++----------------+
+|        35.8889 |
++----------------+
+1 row in set (0.001 sec)
+
+
+MariaDB [dbpegawai]> SELECT COUNT(*) AS jumlah_pegawai FROM pegawai WHERE jenis_kelamin = 'Laki-laki' AND TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) < 40 AND idjabatan = 2;
++----------------+
+| jumlah_pegawai |
++----------------+
+|              0 |
++----------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT COUNT(*) AS jumlah_pegawai FROM pegawai WHERE jenis_kelamin = 'perempuan' AND TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) < 40 AND idjabatan = 4;
++----------------+
+| jumlah_pegawai |
++----------------+
+|              3 |
++----------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT COUNT(*) AS jumlah_pegawai_perempuan FROM pegawai WHERE jenis_kelamin = 'Perempuan';
++--------------------------+
+| jumlah_pegawai_perempuan |
++--------------------------+
+|                        8 |
++--------------------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT SUM(1) AS jumlah_pegawai_SDM FROM pegawai WHERE iddivisi = 1;
++--------------------+
+| jumlah_pegawai_SDM |
++--------------------+
+|                  5 |
++--------------------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT iddivisi, COUNT(*) AS jumlah_pegawai FROM pegawai GROUP BY iddivisi;
++----------+----------------+
+| iddivisi | jumlah_pegawai |
++----------+----------------+
+|        1 |              5 |
+|        2 |              5 |
+|        3 |              5 |
+|        4 |              3 |
++----------+----------------+
+4 rows in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT jenis_kelamin, COUNT(*) AS jumlah_pegawai FROM pegawai GROUP BY jenis_kelamin HAVING COUNT(*) >= 10;
++---------------+----------------+
+| jenis_kelamin | jumlah_pegawai |
++---------------+----------------+
+| Laki-Laki     |             10 |
++---------------+----------------+
+1 row in set (0.001 sec)
+
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE nama LIKE 'Muhammad%';
++----+-------+----------------+---------------+-----------+------------+----------+-----------+---------------------------------+-------------+------+
+| id | nip   | nama           | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat                          | berat_badan | umur |
++----+-------+----------------+---------------+-----------+------------+----------+-----------+---------------------------------+-------------+------+
+|  4 | 90123 | Muhammad Sadam | Laki-Laki     | Gorontalo | 1981-08-03 |        1 |         2 | Jl. Sawangan Indah No. 5, Depok |       44.33 |   42 |
++----+-------+----------------+---------------+-----------+------------+----------+-----------+---------------------------------+-------------+------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE nama LIKE '%Santoso';
++----+-------+--------------+---------------+-----------+------------+----------+-----------+-------------------------------+-------------+------+
+| id | nip   | nama         | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat                        | berat_badan | umur |
++----+-------+--------------+---------------+-----------+------------+----------+-----------+-------------------------------+-------------+------+
+|  7 | 98765 | Budi Santoso | Laki-Laki     | Jakarta   | 1978-11-22 |        2 |         2 | Jl. Setia Warga No. 1, Bekasi |        61.7 |   45 |
++----+-------+--------------+---------------+-----------+------------+----------+-----------+-------------------------------+-------------+------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE nama LIKE '%Asep%';
++----+-------+---------------+---------------+-----------+------------+----------+-----------+----------------------------------------+-------------+------+
+| id | nip   | nama          | jenis_kelamin | tmp_lahir | tgl_lahir  | iddivisi | idjabatan | alamat                                 | berat_badan | umur |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+----------------------------------------+-------------+------+
+|  5 | 12340 | Asep Darmanto | Laki-Laki     | Solo      | 1993-09-05 |        1 |         4 | Jl. Lenteng Agung Raya No. 20, Jakarta |       74.16 |   30 |
++----+-------+---------------+---------------+-----------+------------+----------+-----------+----------------------------------------+-------------+------+
+1 row in set (0.001 sec)
+
+MariaDB [dbpegawai]> SELECT * FROM pegawai WHERE SUBSTRING(nama, 5, 1) = 'S';
++----+-------+---------------+---------------+------------+------------+----------+-----------+----------------------------------+-------------+------+
+| id | nip   | nama          | jenis_kelamin | tmp_lahir  | tgl_lahir  | iddivisi | idjabatan | alamat                           | berat_badan | umur |
++----+-------+---------------+---------------+------------+------------+----------+-----------+----------------------------------+-------------+------+
+|  8 | 65432 | Ani Susanti   | Perempuan     | Pontianak  | 1991-04-25 |        2 |         3 | Jl. Mangga Besar No. 20, Jakarta |       59.97 |   32 |
+| 13 | 35741 | Sulis Setiadi | Laki-Laki     | Balikpapan | 1989-10-30 |        3 |         3 | Jl. Duri Kepa No. 9, Jakarta     |       54.95 |   34 |
++----+-------+---------------+---------------+------------+------------+----------+-----------+----------------------------------+-------------+------+
+2 rows in set (0.001 sec)
+
+
+
+
+
+
+
